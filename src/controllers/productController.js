@@ -56,6 +56,85 @@ export const getAllProducts = async (req, res) => {
     res.status(500).json({ message: "Gagal mengambil data produk" });
   }
 };
+// ==================== UPDATE PRODUCT ====================
+export const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { nama_produk, model, warna, ukuran, variasi, bahan, tujuan } = req.body;
+  const gambarBaru = req.file ? req.file.filename : null;
+
+  // ===== PARSE UKURAN =====
+  let parsedUkuran = ukuran;
+  if (typeof ukuran === "string") {
+    try {
+      if (ukuran.startsWith("[")) {
+        parsedUkuran = JSON.parse(ukuran);
+      } else {
+        parsedUkuran = ukuran.split(",").map(u => Number(u.trim()));
+      }
+    } catch (err) {
+      return res.status(400).json({ message: "Format ukuran tidak valid" });
+    }
+  }
+
+  if (!Array.isArray(parsedUkuran) || parsedUkuran.length === 0) {
+    return res.status(400).json({ message: "Ukuran harus diisi" });
+  }
+
+  try {
+    // cek produk
+    const [cek] = await db.query(
+      "SELECT gambar FROM produk WHERE id_produk = ?",
+      [id]
+    );
+
+    if (cek.length === 0) {
+      return res.status(404).json({ message: "Produk tidak ditemukan" });
+    }
+
+    const gambarFinal = gambarBaru || cek[0].gambar;
+
+    // UPDATE PRODUK
+    await db.query(`
+      UPDATE produk SET
+        nama_produk = ?,
+        model = ?,
+        warna = ?,
+        variasi = ?,
+        bahan = ?,
+        tujuan = ?,
+        gambar = ?
+      WHERE id_produk = ?
+    `, [
+      nama_produk,
+      model,
+      warna,
+      variasi,
+      bahan,
+      tujuan,
+      gambarFinal,
+      id
+    ]);
+
+    // HAPUS UKURAN LAMA
+    await db.query(
+      "DELETE FROM produk_ukuran WHERE produk_id = ?",
+      [id]
+    );
+
+    // INSERT UKURAN BARU
+    const ukuranValues = parsedUkuran.map(u => [id, u]);
+    await db.query(`
+      INSERT INTO produk_ukuran (produk_id, ukuran) VALUES ?
+    `, [ukuranValues]);
+
+    res.json({ message: "Produk berhasil diperbarui" });
+
+  } catch (error) {
+    console.error("❌ Error update produk:", error);
+    res.status(500).json({ message: "Gagal update produk" });
+  }
+};
+
 
 
 // ==================== GET PRODUCT BY ID ====================
