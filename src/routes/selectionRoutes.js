@@ -1,8 +1,8 @@
-import express from 'express';
-import { postSelection } from '../controllers/selectionController.js';
+import express from "express";
+import { getSelection } from "../controllers/selectionController.js";
 
 const router = express.Router();
 
-router.post('/', postSelection);
+router.get("/", getSelection);
 
 export default router;

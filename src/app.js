@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import productRoutes from './routes/productRoutes.js';
 import filterRoutes from './routes/filterRoutes.js';
-import selectionRoutes from './routes/selectionRoutes.js';
+import selectionRoutes from "./routes/selectionRoutes.js";
 import kriteriaRoutes from './routes/kriteriaRoutes.js';
 
 
