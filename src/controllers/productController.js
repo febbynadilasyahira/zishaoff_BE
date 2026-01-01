@@ -24,7 +24,7 @@ export const getAllProducts = async (req, res) => {
         id_produk,
         nama_produk,
         gambar,
-        c1, c2, c3, c4, c5, c6
+        c1, c2, c3, c4
       FROM produk
       ORDER BY id_produk DESC
     `);
@@ -48,7 +48,7 @@ export const getProductById = async (req, res) => {
         id_produk,
         nama_produk,
         gambar,
-        c1, c2, c3, c4, c5, c6
+        c1, c2, c3, c4
       FROM produk
       WHERE id_produk = ?
       `,
@@ -69,17 +69,17 @@ export const getProductById = async (req, res) => {
 
 // ==================== ADD PRODUCT ====================
 export const addProduct = async (req, res) => {
-  const { nama_produk, c1, c2, c3, c4, c5, c6 } = req.body;
+  const { nama_produk, c1, c2, c3, c4 } = req.body;
   const gambar = req.file?.filename || null;
 
   try {
     const [result] = await db.query(
       `
       INSERT INTO produk
-      (nama_produk, gambar, c1, c2, c3, c4, c5, c6)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      (nama_produk, gambar, c1, c2, c3, c4)
+      VALUES (?, ?, ?, ?, ?, ?)
       `,
-      [nama_produk, gambar, c1, c2, c3, c4, c5, c6]
+      [nama_produk, gambar, c1, c2, c3, c4]
     );
 
     res.status(201).json({
@@ -96,7 +96,7 @@ export const addProduct = async (req, res) => {
 // ==================== UPDATE PRODUCT ====================
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { nama_produk, c1, c2, c3, c4, c5, c6 } = req.body;
+  const { nama_produk, c1, c2, c3, c4 } = req.body;
   const gambarBaru = req.file?.filename || null;
 
   try {
@@ -113,13 +113,13 @@ export const updateProduct = async (req, res) => {
       `
       UPDATE produk SET
         nama_produk = ?,
-        c1 = ?, c2 = ?, c3 = ?, c4 = ?, c5 = ?, c6 = ?,
+        c1 = ?, c2 = ?, c3 = ?, c4 = ?,
         gambar = ?
       WHERE id_produk = ?
       `,
       [
         nama_produk,
-        c1, c2, c3, c4, c5, c6,
+        c1, c2, c3, c4,
         gambarBaru || existing.gambar,
         id,
       ]
