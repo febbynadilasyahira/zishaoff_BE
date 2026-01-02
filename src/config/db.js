@@ -1,11 +1,15 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 const db = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // ganti sesuai password MySQL kamu
-  database: 'zisha',
+  host: process.env.MYSQLHOST,
+  port: process.env.MYSQLPORT,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-console.log('✅ Berhasil konek ke MySQL Database!');
+console.log("✅ Berhasil konek ke MySQL Railway!");
 export default db;
