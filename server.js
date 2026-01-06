@@ -7,6 +7,7 @@ import selectionRoutes from "./src/routes/selectionRoutes.js"; // ⭐ ROUTE SELE
 import path from "path";
 import { fileURLToPath } from "url";
 import { seedProducts } from "./src/utils/seedData.js";
+import sawResultRoutes from "./src/routes/sawResultRoutes.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes); // ⭐ Tambahkan ini
 app.use("/api/kriteria", kriteriaRoutes); // ⭐ ROUTE KRITERIA
 app.use("/api/selection", selectionRoutes); // route untuk selection
+app.use("/api/saw-results", sawResultRoutes);
 
 // Jalankan server
 const PORT = 8000;
