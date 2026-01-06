@@ -30,7 +30,7 @@ app.use("/api/saw-results", sawResultRoutes);
 // Jalankan server
 const PORT = 8000;
 app.listen(PORT, async () => {
-console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
   
   // Seed data produk jika belum ada
   try {
