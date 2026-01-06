@@ -1,18 +1,10 @@
-import { calculateSAW } from "../services/sawService.js";
+import express from "express";
+import { getSawResultForAdmin } from "../controllers/sawResultController.js";
 
-/**
- * Hasil SAW khusus admin
- */
-export const getSawResultForAdmin = async (req, res) => {
-  try {
-    const result = await calculateSAW();
+const router = express.Router();
 
-    res.json({
-      success: true,
-      data: result
-    });
-  } catch (error) {
-    console.error("Error SAW admin:", error);
-    res.status(500).json({ message: "Gagal mengambil hasil SAW" });
-  }
-};
+// khusus admin - hasil SAW
+router.get("/", getSawResultForAdmin);
+
+// ⬇️ WAJIB ADA INI
+export default router;
