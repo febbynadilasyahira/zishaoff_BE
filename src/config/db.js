@@ -1,12 +1,11 @@
 import mysql from "mysql2/promise";
 
 const db = await mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "",
-  database: "zisha"
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "zisha_db",
+  port: process.env.DB_PORT || 3306,
 });
 
-console.log("✅ Berhasil konek ke MySQL Localhost!");
 export default db;
