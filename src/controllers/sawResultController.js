@@ -1,15 +1,10 @@
 import { getSelectionResult } from "./selectionController.js";
 
-/**
- * Hasil SAW khusus admin
- * return: semua produk + nilai SAW + ranking
- */
 export const getSawResultForAdmin = async (req, res) => {
   try {
-    // pakai logic SAW yang sudah ada
     const results = await getSelectionResult({
       query: req.query,
-      adminView: true
+      adminView: true,
     });
 
     res.json(results);
