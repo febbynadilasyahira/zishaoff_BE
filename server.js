@@ -15,7 +15,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ CORS FIX (PENTING)
+// ✅ CORS (AMAN UNTUK VERCEL + LOCAL)
 app.use(
   cors({
     origin: [
@@ -24,16 +24,21 @@ app.use(
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false, // ⬅️ WAJIB false kalau origin spesifik
+    credentials: false,
   })
 );
 
-// Preflight handler
+// Preflight
 app.options("*", cors());
 
 // Middleware
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ✅ ROOT ENDPOINT (WAJIB UNTUK RAILWAY)
+app.get("/", (req, res) => {
+  res.send("🚀 Zisha OFFBE API is running");
+});
 
 // Routes
 app.use("/api/products", productRoutes);
@@ -42,14 +47,13 @@ app.use("/api/kriteria", kriteriaRoutes);
 app.use("/api/selection", selectionRoutes);
 app.use("/api/saw-results", sawResultRoutes);
 
+// ✅ SEED DIJALANKAN TANPA BLOCK SERVER
+seedProducts()
+  .then(() => console.log("🌱 Seed selesai"))
+  .catch((err) => console.error("❌ Seed error:", err));
+
 // Server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-
-  try {
-    await seedProducts();
-  } catch (err) {
-    console.error("❌ Seed error:", err);
-  }
 });
