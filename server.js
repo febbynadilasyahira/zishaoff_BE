@@ -18,36 +18,34 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================
-// CORS CONFIG (VERCEL + LOCAL)
+// CORS CONFIG (AMAN & STABIL)
 // ==========================
-const FRONTEND_URL = process.env.FRONTEND_URL;
+const allowedOrigins = [
+  "https://zishaofficial1.vercel.app",
+  "https://zishaofficial1-clmsuxvrl-fnadilasyahira-3815s-projects.vercel.app",
+];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow server-to-server, postman, curl
+    origin: (origin, callback) => {
+      // allow server-to-server / postman
       if (!origin) return callback(null, true);
 
-      // allow frontend from env
-      if (origin === FRONTEND_URL) {
+      // allow Vercel (all preview + prod)
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.includes("vercel.app") ||
+        origin.includes("localhost")
+      ) {
         return callback(null, true);
       }
 
-      // allow localhost (dev)
-      if (origin.startsWith("http://localhost")) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
+      return callback(null, false);
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false, // ⬅️ wajib false (AMAN)
   })
 );
-
-// handle preflight
-app.options("*", cors());
 
 // ==========================
 // MIDDLEWARE
