@@ -12,40 +12,24 @@ import { seedProducts } from "./src/utils/seedData.js";
 const app = express();
 
 // ==========================
-// SETUP __DIRNAME (ESM)
+// SETUP __DIRNAME
 // ==========================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================
-// CORS CONFIG (AMAN & STABIL)
+// CORS (FINAL, ANTI ERROR)
 // ==========================
-const allowedOrigins = [
-  "https://zishaofficial1.vercel.app",
-  "https://zishaofficial1-clmsuxvrl-fnadilasyahira-3815s-projects.vercel.app",
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // allow server-to-server / postman
-      if (!origin) return callback(null, true);
-
-      // allow Vercel (all preview + prod)
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.includes("vercel.app") ||
-        origin.includes("localhost")
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(null, false);
-    },
+    origin: true, // ⬅️ TERIMA SEMUA ORIGIN
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ⬅️ WAJIB: HANDLE PREFLIGHT
+app.options("*", cors());
 
 // ==========================
 // MIDDLEWARE
@@ -54,7 +38,7 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ==========================
-// ROOT (WAJIB UNTUK RAILWAY)
+// ROOT CHECK
 // ==========================
 app.get("/", (req, res) => {
   res.send("🚀 Zisha OFFBE API is running");
@@ -70,11 +54,11 @@ app.use("/api/selection", selectionRoutes);
 app.use("/api/saw-results", sawResultRoutes);
 
 // ==========================
-// SEED (NON-BLOCKING)
+// SEED (NON BLOCKING)
 // ==========================
 seedProducts()
   .then(() => console.log("🌱 Seed selesai"))
-  .catch((err) => console.error("❌ Seed error:", err));
+  .catch(console.error);
 
 // ==========================
 // SERVER
