@@ -15,11 +15,23 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ✅ CORS FIX (PENTING)
+app.use(
+  cors({
+    origin: [
+      "https://zishaofficial1.vercel.app",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false, // ⬅️ WAJIB false kalau origin spesifik
+  })
+);
+
+// Preflight handler
+app.options("*", cors());
+
 // Middleware
-app.use(cors({
-  origin: "*",
-  credentials: true
-}));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
