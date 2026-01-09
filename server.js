@@ -20,16 +20,21 @@ const __dirname = path.dirname(__filename);
 // ==========================
 // CORS (FINAL, ANTI ERROR)
 // ==========================
-app.use(
-  cors({
-    origin: true, // ⬅️ TERIMA SEMUA ORIGIN
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow all origins for development/production
+    callback(null, true);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  maxAge: 86400,
+};
+
+app.use(cors(corsOptions));
 
 // ⬅️ WAJIB: HANDLE PREFLIGHT
-app.options("*", cors());
+app.options("*", cors(corsOptions));
 
 // ==========================
 // MIDDLEWARE
@@ -66,4 +71,10 @@ seedProducts()
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log("Environment variables check:");
+  console.log("- MYSQLHOST:", process.env.MYSQLHOST ? "✅" : "❌ MISSING");
+  console.log("- MYSQLUSER:", process.env.MYSQLUSER ? "✅" : "❌ MISSING");
+  console.log("- MYSQLPASSWORD:", process.env.MYSQLPASSWORD ? "✅" : "❌ MISSING");
+  console.log("- MYSQLDATABASE:", process.env.MYSQLDATABASE ? "✅" : "❌ MISSING");
+  console.log("- MYSQLPORT:", process.env.MYSQLPORT ? "✅" : "❌ MISSING");
 });
