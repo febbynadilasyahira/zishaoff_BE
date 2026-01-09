@@ -20,21 +20,29 @@ const __dirname = path.dirname(__filename);
 // ==========================
 // CORS (FINAL, ANTI ERROR)
 // ==========================
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow all origins for development/production
-    callback(null, true);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  maxAge: 86400,
-};
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Max-Age", "86400");
+  
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
-app.use(cors(corsOptions));
+// Alternative: Gunakan cors package juga untuk extra safety
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // ⬅️ WAJIB: HANDLE PREFLIGHT
-app.options("*", cors(corsOptions));
+app.options("*", cors());
 
 // ==========================
 // MIDDLEWARE
